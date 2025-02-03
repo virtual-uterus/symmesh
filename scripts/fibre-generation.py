@@ -48,20 +48,27 @@ if __name__ == "__main__":
         default="xml",
         help="mesh extension",
     )
+    parser.add_argument(
+        "--data-dir",
+        type=str,
+        default="symfibre/data",
+        help="path from BASE to the directory for reading and saving data",
+    )
 
     args = parser.parse_args()
 
-    # Create mesh path
+    # Create mesh and data path
     mesh_path = os.path.join(
         HOME, BASE, args.dir_path, args.mesh_name + "." + args.extension
     )
+    data_path = os.path.join(HOME, BASE, args.data_dir)
 
     # Create path to outer data (currently hacky)
-    data_path = os.path.join(
-        HOME, BASE, "symfibre/data", args.mesh_name + "_outer_points.csv"
+    outer_points_data_path = os.path.join(
+        HOME, BASE, args.data_dir, args.mesh_name + "_outer_points.csv"
     )
 
-    outer_data = pd.read_csv(data_path)
+    outer_data = pd.read_csv(outer_points_data_path)
 
     # Extract the last three columns (assuming they are x, y, z coordinates)
     outer_coords = outer_data.iloc[:, -3:].to_numpy()
@@ -81,7 +88,16 @@ if __name__ == "__main__":
     outer.mark(ffun, OUTER_MARK)
     base.mark(ffun, BASE_MARK)
 
-    df.File("../data/" + args.mesh_name + "_markers" + ".pvd") << ffun
+    # Save markers
+    (
+        df.File(
+            os.path.join(
+                data_path,
+                args.mesh_name + "_markers" + ".pvd",
+            )
+        )
+        << ffun
+    )
 
     # Decide on the angles you want to use
     angles = dict(
@@ -98,4 +114,9 @@ if __name__ == "__main__":
         ffun=ffun,
         **angles,
     )
-    ldrb.fiber_to_xdmf(fibre, "../data/fibre")  # Save to Paraview
+
+    # Save to Paraview
+    ldrb.fiber_to_xdmf(
+        fibre,
+        os.path.join(data_path, args.mesh_name + "_fibres"),
+    )
