@@ -68,3 +68,19 @@ if __name__ == "__main__":
     df.File(args.mesh_name + "_markers" + ".pvd") << ffun
 
     ldrb.dolfin_ldrb(mesh, fiber_space="P_2", markers=MARKERS, ffun=ffun)
+    # Decide on the angles you want to use
+    angles = dict(
+        alpha_endo_lv=-45,  # Fiber angle on the LV endocardium
+        alpha_epi_lv=-90,  # Fiber angle on the LV epicardium
+        beta_endo_lv=0,  # Sheet angle on the LV endocardium
+        beta_epi_lv=0,  # Sheet angle on the LV epicardium
+    )
+
+    fibre, sheet, sheet_normal = ldrb.dolfin_ldrb(
+        mesh,
+        fiber_space="Quadrature_2",
+        markers=MARKERS,
+        ffun=ffun,
+        **angles,
+    )
+    ldrb.fiber_to_xdmf(fibre, "../data/fibre")
