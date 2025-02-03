@@ -98,4 +98,4 @@ if __name__ == "__main__":
         ffun=ffun,
         **angles,
     )
-    ldrb.fiber_to_xdmf(fibre, "../data/fibre")
+    ldrb.fiber_to_xdmf(fibre, "../data/fibre")  # Save to Paraview
