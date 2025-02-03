@@ -65,9 +65,8 @@ if __name__ == "__main__":
     outer.mark(ffun, OUTER_MARK)
     base.mark(ffun, BASE_MARK)
 
-    df.File(args.mesh_name + "_markers" + ".pvd") << ffun
+    df.File("../data/" + args.mesh_name + "_markers" + ".pvd") << ffun
 
-    ldrb.dolfin_ldrb(mesh, fiber_space="P_2", markers=MARKERS, ffun=ffun)
     # Decide on the angles you want to use
     angles = dict(
         alpha_endo_lv=-45,  # Fiber angle on the LV endocardium
