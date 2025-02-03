@@ -15,9 +15,15 @@ import ldrb
 import argparse
 
 import dolfin as df
+import pandas as pd
 
 from symfibre.constants import HOME, BASE
-from symfibre.constants import INNER_MARK, OUTER_MARK, BASE_MARK, MARKERS
+from symfibre.constants import (
+    INNER_MARK,
+    OUTER_MARK,
+    BASE_MARK,
+    MARKERS,
+)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -50,15 +56,25 @@ if __name__ == "__main__":
         HOME, BASE, args.dir_path, args.mesh_name + "." + args.extension
     )
 
+    # Create path to outer data (currently hacky)
+    data_path = os.path.join(
+        HOME, BASE, "symfibre/data", args.mesh_name + "_outer_points.csv"
+    )
+
+    outer_data = pd.read_csv(data_path)
+
+    # Extract the last three columns (assuming they are x, y, z coordinates)
+    outer_coords = outer_data.iloc[:, -3:].to_numpy()
+
     mesh = df.Mesh(mesh_path)
 
     # Create facet function
     ffun = df.MeshFunction("size_t", mesh, 2)
-    ffun.set_all(BASE_MARK)
+    ffun.set_all(0)
 
-    # Create instances to annotate facets
+    # Create instances to annotate facets (order is important)
     inner = InnerLayer()
-    outer = OuterLayer()
+    outer = OuterLayer(outer_coords)
     base = BaseLayer()
 
     inner.mark(ffun, INNER_MARK)
