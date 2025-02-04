@@ -8,6 +8,43 @@ Author: Mathias Roesler
 Date: 01/25
 """
 
+import numpy as np
+
+
+def write_ortho_file(file_path, fibres, sheets, normals):
+    """Writes an ortho file based on the fibres, sheets, and normals
+
+    Arguments:
+    file_path -- str, path to the ortho file.
+    fibres -- np.array(N, 3), coordinates of the fibres.
+    sheets -- np.array(N, 3), coordinates of the sheets.
+    normals -- np.array(N, 3), coordinates of the normals.
+
+    Return:
+
+    Raises:
+    ValueError -- if the size of the arrays does not match.
+    ValueError -- if the arrays do not have three coordinates.
+
+    """
+    if not (fibres.shape == sheets.shape == normals.shape):
+        raise ValueError("input arrays must have the same shape.")
+
+    if not fibres.shape[1] == 3:
+        raise ValueError("input arrays must have 3 coordinates.")
+
+    n = fibres.shape[0]
+
+    with open(file_path, "w") as f:
+        f.write(f"{n}\n")  # Write the number of entries
+
+        for i in range(n):
+            f.write(
+                f"{fibres[i,0]:.6f} {fibres[i,1]:.6f} {fibres[i,2]:.6f} "
+                f"{sheets[i,0]:.6f} {sheets[i,1]:.6f} {sheets[i,2]:.6f} "
+                f"{normals[i,0]:.6f} {normals[i,1]:.6f} {normals[i,2]:.6f}\n"
+            )
+
 
 def extract_coordinates(points, fibre_fct, sheet_fct, normal_fct):
     """Extracts the coordinates of the ldrb FiberSheetSystem at specific points
