@@ -9,7 +9,11 @@ Date: 01/25
 """
 
 from symfibre.facet_fct import InnerLayer, OuterLayer, BaseLayer
-from symfibre.utils import write_ortho_file, extract_coordinates
+from symfibre.utils import (
+    write_ortho_file,
+    extract_coordinates,
+    element_centres,
+)
 
 import os
 import ldrb
@@ -119,8 +123,9 @@ if __name__ == "__main__":
         os.path.join(data_path, args.mesh_name + "_fibres"),
     )
 
+    centres = element_centres(mesh)
     fibre_coords, sheet_coords, normal_coords = extract_coordinates(
-        mesh.coordinates(), fibres, sheets, normals
+        centres, fibres, sheets, normals
     )
     write_ortho_file(
         os.path.join(data_path, args.mesh_name + ".ortho"),
