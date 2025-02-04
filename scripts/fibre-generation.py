@@ -9,6 +9,7 @@ Date: 01/25
 """
 
 from symfibre.facet_fct import InnerLayer, OuterLayer, BaseLayer
+from symfibre.utils import write_ortho_file, extract_coordinates
 
 import os
 import ldrb
@@ -58,9 +59,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Create mesh and data path
-    mesh_path = os.path.join(
-        HOME, BASE, args.dir_path, args.mesh_name + "." + args.extension
-    )
+    mesh_path = os.path.join(HOME, BASE, args.dir_path, args.mesh_name)
     data_path = os.path.join(HOME, BASE, args.data_dir)
 
     # Create path to outer data (currently hacky)
@@ -73,7 +72,7 @@ if __name__ == "__main__":
     # Extract the last three columns (assuming they are x, y, z coordinates)
     outer_coords = outer_data.iloc[:, -3:].to_numpy()
 
-    mesh = df.Mesh(mesh_path)
+    mesh = df.Mesh(mesh_path + "." + args.extension)
 
     # Create facet function
     ffun = df.MeshFunction("size_t", mesh, 2)
@@ -107,9 +106,8 @@ if __name__ == "__main__":
         beta_epi_lv=0,  # Sheet angle on the LV epicardium
     )
 
-    fibre, sheet, sheet_normal = ldrb.dolfin_ldrb(
+    fibres, sheets, normals = ldrb.dolfin_ldrb(
         mesh,
-        fiber_space="Quadrature_2",
         markers=MARKERS,
         ffun=ffun,
         **angles,
@@ -117,6 +115,16 @@ if __name__ == "__main__":
 
     # Save to Paraview
     ldrb.fiber_to_xdmf(
-        fibre,
+        fibres,
         os.path.join(data_path, args.mesh_name + "_fibres"),
+    )
+
+    fibre_coords, sheet_coords, normal_coords = extract_coordinates(
+        mesh.coordinates(), fibres, sheets, normals
+    )
+    write_ortho_file(
+        os.path.join(data_path, args.mesh_name + ".ortho"),
+        fibre_coords,
+        sheet_coords,
+        normal_coords,
     )
