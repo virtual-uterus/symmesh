@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     centres = element_centres(mesh)
     fibre_coords, sheet_coords, normal_coords = extract_coordinates(
-        centres, fibres, sheets, normals
+        centres, fibres, sheets
     )
     write_ortho_file(
         os.path.join(data_path, args.mesh_name + ".ortho"),
