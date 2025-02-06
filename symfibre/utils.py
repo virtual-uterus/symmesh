@@ -47,15 +47,17 @@ def write_ortho_file(file_path, fibres, sheets, normals):
             )
 
 
-def extract_coordinates(points, fibre_fct, sheet_fct, normal_fct):
+def extract_coordinates(points, fibre_fct, sheet_fct):
     """Extracts the coordinates of the ldrb FiberSheetSystem at specific points
+
+    Normal vectors are calculated using the cross product between the fibre and
+    sheet vectors.
 
     Arguments:
     points -- np.array(N, 3), list of point coordinates to evaluate
     the FiberSheetSystem functions.
     fibre_fct -- df.Function, FiberSheetSystem fibre function.
     sheet_fct -- df.Function, FiberSheetSystem sheet function.
-    normal_fct -- df.Function, FiberSheetSystem normal function.
 
     Return:
     fibres -- np.array, list of fibre coordinates.
@@ -70,11 +72,13 @@ def extract_coordinates(points, fibre_fct, sheet_fct, normal_fct):
     sheets = []
     normals = []
 
-    for point in points:
-        fibres.append(fibre_fct(point))
-        sheets.append(sheet_fct(point))
-        normals.append(normal_fct(point))
+    for i, point in enumerate(points):
+        fibre_vec = fibre_fct(point)
+        sheet_vec = sheet_fct(point)
 
+        fibres.append(fibre_fct(point))
+        normals.append(np.cross(fibre_vec, sheet_vec))
+        sheets.append(np.cross(fibre_vec, normals[i]))
     return np.array(fibres), np.array(sheets), np.array(normals)
 
 
