@@ -41,9 +41,9 @@ def write_ortho_file(file_path, fibres, sheets, normals):
 
         for i in range(n):
             f.write(
-                f"{fibres[i,0]:.6f} {fibres[i,1]:.6f} {fibres[i,2]:.6f} "
-                f"{sheets[i,0]:.6f} {sheets[i,1]:.6f} {sheets[i,2]:.6f} "
-                f"{normals[i,0]:.6f} {normals[i,1]:.6f} {normals[i,2]:.6f}\n"
+                f"{fibres[i, 0]:.1f} {fibres[i, 1]:.1f} {fibres[i, 2]:.1f} "
+                f"{sheets[i, 0]:.1f} {sheets[i, 1]:.1f} {sheets[i, 2]:.1f} "
+                f"{normals[i, 0]:.1f} {normals[i, 1]:.1f} {normals[i, 2]:.1f}\n"
             )
 
 
