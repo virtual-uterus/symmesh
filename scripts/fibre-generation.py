@@ -112,6 +112,7 @@ if __name__ == "__main__":
 
     fibres, sheets, normals = ldrb.dolfin_ldrb(
         mesh,
+        fiber_space="P_2",
         markers=MARKERS,
         ffun=ffun,
         **angles,
