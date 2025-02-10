@@ -76,9 +76,21 @@ def extract_coordinates(points, fibre_fct, sheet_fct):
         fibre_vec = fibre_fct(point)
         sheet_vec = sheet_fct(point)
 
-        fibres.append(fibre_fct(point))
-        normals.append(np.cross(fibre_vec, sheet_vec))
-        sheets.append(np.cross(fibre_vec, normals[i]))
+        # Normalise fibre and sheet vectors
+        fibre_vec /= np.linalg.norm(fibre_vec)
+        sheet_vec /= np.linalg.norm(sheet_vec)
+
+        # Compute normal vector and normalise it
+        normal_vec = np.cross(fibre_vec, sheet_vec)
+        normal_vec /= np.linalg.norm(normal_vec)
+
+        # Recompute sheet vector to ensure orthogonality
+        sheet_vec = np.cross(fibre_vec, normal_vec)
+
+        fibres.append(fibre_vec)
+        sheets.append(sheet_vec)
+        normals.append(normal_vec)
+
     return np.array(fibres), np.array(sheets), np.array(normals)
 
 
