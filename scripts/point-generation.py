@@ -82,7 +82,8 @@ if __name__ == "__main__":
     centres = element_centres(mesh)
 
     rescaled_centres = (centres + args.translation) * args.scale
-    rescaled_points = (mesh.coordinates + args.translation) * args.scale
+    rescaled_points = (mesh.coordinates() + args.translation) * args.scale
+
     pd.DataFrame(rescaled_centres).to_csv(  # Save to csv file
         os.path.join(data_path, args.mesh_name + "_elements.csv"),
         index=False,
