@@ -8,20 +8,25 @@ Author: Mathias Roesler
 Date: 01/25
 """
 
+import sys
 import numpy as np
-import dolfin as df
+
+try:
+    import dolfin as df
+except ImportError:
+    sys.stderr.write("Warning: no module named dolfin\n")
 
 
 def write_ortho_file(file_path, fibres, sheets, normals):
     """Writes an ortho file based on the fibres, sheets, and normals
 
-    Arguments:
+    Args:
     file_path -- str, path to the ortho file.
     fibres -- np.array(N, 3), coordinates of the fibres.
     sheets -- np.array(N, 3), coordinates of the sheets.
     normals -- np.array(N, 3), coordinates of the normals.
 
-    Return:
+    Returns:
 
     Raises:
     ValueError -- if the size of the arrays does not match.
@@ -53,13 +58,13 @@ def extract_coordinates(points, fibre_fct, sheet_fct):
     Normal vectors are calculated using the cross product between the fibre and
     sheet vectors.
 
-    Arguments:
+    Args:
     points -- np.array(N, 3), list of point coordinates to evaluate
     the FiberSheetSystem functions.
     fibre_fct -- df.Function, FiberSheetSystem fibre function.
     sheet_fct -- df.Function, FiberSheetSystem sheet function.
 
-    Return:
+    Returns:
     fibres -- np.array, list of fibre coordinates.
     sheets -- np.array, list of sheet coordinates.
     normals -- np.array, list of normal coordinates.
@@ -97,10 +102,10 @@ def extract_coordinates(points, fibre_fct, sheet_fct):
 def element_centres(mesh):
     """Extracts element centres from a given mesh
 
-    Arguments:
+    Args:
     mesh -- df.Mesh, mesh to extract the centres from.
 
-    Return:
+    Returns:
     centres -- np.array(N, 3), element centres.
 
     Raises:
@@ -119,3 +124,41 @@ def element_centres(mesh):
         centres[i] = np.mean(mesh.coordinates()[ele], axis=0)
 
     return centres
+
+
+def fibres_from_ortho(ortho_file):
+    """Extracts fibre vectors from an ortho file
+
+    Args:
+    ortho_file -- str, path to the ortho file.
+
+    Returns:
+    fibres -- np.array(float), array of fibre vectors.
+    angles -- np.array(float), orientation of the fibre based on the
+    z-axis, in degrees.
+
+    Raises:
+
+    """
+    with open(ortho_file, "r") as f:
+        lines = f.readlines()
+
+    # Initialise arrays with 0s
+    fibres = np.zeros((len(lines) - 1, 3), dtype=np.float64)
+    angles = np.zeros((len(lines) - 1, 1), dtype=np.float64)
+
+    for i, line in enumerate(lines):
+        if i == 0:  # Skip the number of lines
+            continue
+
+        split_line = line.strip().split()  # Split line into individual values
+
+        fibres[i - 1] = np.array(  # Get the fibre values
+            [float(ele) for ele in split_line[0:3]]
+        )
+        angles[i - 1] = np.degrees(np.arccos(np.dot(fibres[i - 1], [0, 0, 1])))
+
+        if angles[i - 1] > 90:
+            angles[i - 1] -= 180
+
+    return fibres, abs(angles)
