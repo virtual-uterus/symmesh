@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-centroid-generation.py
+point-generation.py
 
-Generate the list of points to interrogate to create realistic fibres.
+Generate the list of points and element coordinates
+to interrogate the structure tensor at to create realistic fibres.
 Author: Mathias Roesler
 Date: 02/25
 """
@@ -21,10 +22,10 @@ import pandas as pd
 
 from symfibre.constants import HOME, BASE
 
+desc = "Writes .csv files for points and elements for fibre generation"
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generates a .csv list of points to create fibres"
-    )
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument(
         "dir_path",
         type=str,
@@ -81,8 +82,14 @@ if __name__ == "__main__":
     centres = element_centres(mesh)
 
     rescaled_centres = (centres + args.translation) * args.scale
+    rescaled_points = (mesh.coordinates + args.translation) * args.scale
     pd.DataFrame(rescaled_centres).to_csv(  # Save to csv file
-        os.path.join(data_path, args.mesh_name + ".csv"),
+        os.path.join(data_path, args.mesh_name + "_elements.csv"),
+        index=False,
+        header=False,
+    )
+    pd.DataFrame(rescaled_points).to_csv(  # Save to csv file
+        os.path.join(data_path, args.mesh_name + "_points.csv"),
         index=False,
         header=False,
     )
