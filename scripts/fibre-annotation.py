@@ -51,7 +51,7 @@ if __name__ == "__main__":
     data_path = os.path.join(HOME, BASE, args.dir_path)
 
     mesh = meshio.read(mesh_path + "." + args.extension)
-    ortho_file = os.path.join(mesh_path + ".ortho")
+    ortho_file = os.path.join(mesh_path + "_points.ortho")
 
     fibres, angles = fibres_from_ortho(ortho_file)
     mesh.point_data["fibres"] = fibres
