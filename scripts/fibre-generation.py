@@ -104,9 +104,9 @@ if __name__ == "__main__":
 
     # Decide on the angles you want to use
     angles = dict(
-        alpha_endo_lv=-45,  # Fiber angle on the LV endocardium
+        alpha_endo_lv=-0,  # Fiber angle on the LV endocardium
         alpha_epi_lv=-90,  # Fiber angle on the LV epicardium
-        beta_endo_lv=-45,  # Sheet angle on the LV endocardium
+        beta_endo_lv=-0,  # Sheet angle on the LV endocardium
         beta_epi_lv=0,  # Sheet angle on the LV epicardium
     )
 
