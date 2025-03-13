@@ -64,11 +64,11 @@ if __name__ == "__main__":
 
     # Create mesh and data path
     mesh_path = os.path.join(HOME, BASE, args.dir_path, args.mesh_name)
-    data_path = os.path.join(HOME, BASE, args.data_dir)
+    data_path = os.path.join(HOME, BASE, args.dir_path)
 
     # Create path to outer data (currently hacky)
     outer_points_data_path = os.path.join(
-        HOME, BASE, args.data_dir, args.mesh_name + "_outer_points.csv"
+        data_path, args.mesh_name + "_outer_points.csv"
     )
 
     outer_data = pd.read_csv(outer_points_data_path)
