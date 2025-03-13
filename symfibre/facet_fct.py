@@ -48,7 +48,7 @@ class OuterLayer(df.SubDomain):
         """
         if on_boundary:
             norms = np.linalg.norm(coord - self.outer_coords, axis=1)
-            return min(norms) < 0.025
+            return min(norms) < 0.028
         return False
 
 
@@ -65,6 +65,6 @@ class BaseLayer(df.SubDomain):
         on_boundary -- bool, true if conditions are satisfied
 
         """
-        if coord[2] >= 0.98 and on_boundary:
+        if coord[2] >= 1.98 and on_boundary:
             return True
         return False
