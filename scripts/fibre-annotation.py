@@ -10,9 +10,11 @@ Date: 02/25
 
 from symfibre.utils import (
     fibres_from_ortho,
+    fibres_from_scaffold_ortho,
 )
 
 import os
+import sys
 import meshio
 import argparse
 
@@ -43,17 +45,43 @@ if __name__ == "__main__":
         default="vtk",
         help="mesh extension",
     )
+    parser.add_argument(
+        "--scaffold",
+        "-s",
+        action="store_true",
+        help="flag to indicate if using a scaffold",
+    )
 
     args = parser.parse_args()  # Parse input arguments
 
     # Create mesh and data path
     mesh_path = os.path.join(HOME, BASE, args.dir_path, args.mesh_name)
     data_path = os.path.join(HOME, BASE, args.dir_path)
+    outer_points_path = ""
+
+    if args.scaffold:
+        outer_points_path = mesh_path + "_outer_points.csv"
 
     mesh = meshio.read(mesh_path + "." + args.extension)
     ortho_file = os.path.join(mesh_path + "_points.ortho")
 
-    fibres, angles = fibres_from_ortho(ortho_file)
+    try:
+        if args.scaffold:
+            fibres, angles = fibres_from_scaffold_ortho(
+                ortho_file,
+                outer_points_path,
+                mesh.points,
+            )
+        else:
+            fibres, angles = fibres_from_ortho(ortho_file)
+    except FileNotFoundError as e:
+        sys.stderr.write(f"Error: {e.filename} not found.\n")
+        exit()
+
+    except ValueError as e:
+        sys.stderr.write(f"Error: {e}")
+        exit()
+
     mesh.point_data["fibres"] = fibres
     mesh.point_data["angles"] = angles
 
