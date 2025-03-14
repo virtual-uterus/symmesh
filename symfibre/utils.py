@@ -128,7 +128,7 @@ def element_centres(mesh):
 
 
 def fibres_from_ortho(ortho_file):
-    """Extracts fibre vectors from an ortho file
+    """Extracts fibre vectors and angles from an ortho file
 
     Args:
     ortho_file -- str, path to the ortho file.
@@ -139,10 +139,14 @@ def fibres_from_ortho(ortho_file):
     z-axis, in degrees.
 
     Raises:
+    FileNotFoundError, if the ortho file is not found.
 
     """
-    with open(ortho_file, "r") as f:
-        lines = f.readlines()
+    try:
+        with open(ortho_file, "r") as f:
+            lines = f.readlines()
+    except FileNotFoundError as e:
+        raise e
 
     # Initialise arrays with 0s
     fibres = np.zeros((len(lines) - 1, 3), dtype=np.float64)
