@@ -10,6 +10,7 @@ Date: 01/25
 
 import sys
 import numpy as np
+import pandas as pd
 
 try:
     import dolfin as df
@@ -157,6 +158,80 @@ def fibres_from_ortho(ortho_file):
             [float(ele) for ele in split_line[0:3]]
         )
         angles[i - 1] = np.degrees(np.arccos(np.dot(fibres[i - 1], [0, 0, 1])))
+
+        if angles[i - 1] > 90:
+            angles[i - 1] -= 180
+
+    return fibres, abs(angles)
+
+
+def fibres_from_scaffold_ortho(ortho_file, outer_points_path, mesh_points):
+    """Extracts fibre vectors and angles from the scaffold ortho file
+
+    Args:
+    ortho_file -- str, path to the ortho file.
+    outer_points_path -- str, path to the outer points, only used for
+    scaffolds because they do not have centerlines, default value "".
+    mesh_points -- np.array(float), coordinates of the mesh points.
+
+    Returns:
+    fibres -- np.array(float), array of fibre vectors.
+    angles -- np.array(float), orientation of the fibre based on the
+    z-axis, in degrees.
+
+    Raises:
+    FileNotFoundError, if the ortho file is not found.
+    FileNotFoundError, if the outer points file is not found.
+    ValueError, if the number of mesh points is different from the number of
+    fibres.
+
+    """
+    try:
+        with open(ortho_file, "r") as f:
+            lines = f.readlines()
+    except FileNotFoundError as e:
+        raise e
+
+    try:
+        data_frame = pd.read_csv(outer_points_path)
+    except FileNotFoundError as e:
+        raise e
+    # Get the vtk IDs of the outer points
+    outer_points_ids = np.array(data_frame[data_frame.columns[0]])
+
+    if len(lines) - 1 != len(mesh_points):
+        raise ValueError("number of fibres and mesh points should be equal")
+
+    # Initialise arrays with 0s
+    fibres = np.zeros((len(lines) - 1, 3), dtype=np.float64)
+    angles = np.zeros((len(lines) - 1, 1), dtype=np.float64)
+
+    for i, line in enumerate(lines):
+        if i == 0:  # Skip the number of lines
+            continue
+
+        split_line = line.strip().split()  # Split line into individual values
+
+        fibres[i - 1] = np.array(  # Get the fibre values
+            [float(ele) for ele in split_line[0:3]]
+        )
+
+        if i - 1 in outer_points_ids:
+            # Outer layer point are 0 degrees relative to the centerline
+            angles[i - 1] = 0
+        elif mesh_points[i - 1, 2] > 1.99 or mesh_points[i - 1, 2] < 0.25:
+            # For points near the ovaries or cervix estimate XY plane angle
+            angles[i - 1] = np.degrees(
+                np.arccos(
+                    np.dot(
+                        fibres[i - 1],
+                        [0, 0, 1],
+                    )
+                )
+            )
+        else:
+            # Other angles are circumferential and 90 degrees
+            angles[i - 1] = 90
 
         if angles[i - 1] > 90:
             angles[i - 1] -= 180
