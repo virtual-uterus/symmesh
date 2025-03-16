@@ -130,6 +130,9 @@ def element_centres(mesh):
 def fibres_from_ortho(ortho_file):
     """Extracts fibre vectors and angles from an ortho file
 
+    If the ortho file contains the angle at the end of the line the angle
+    is read directly otherwise it is calculated relative to the XY plane.
+
     Args:
     ortho_file -- str, path to the ortho file.
 
@@ -161,7 +164,21 @@ def fibres_from_ortho(ortho_file):
         fibres[i - 1] = np.array(  # Get the fibre values
             [float(ele) for ele in split_line[0:3]]
         )
-        angles[i - 1] = np.degrees(np.arccos(np.dot(fibres[i - 1], [0, 0, 1])))
+
+        if len(split_line) == 10:
+            # If the angles are at the end of the line
+            angles[i - 1] = split_line[-1]
+
+        else:
+            # Calculate angles relative to the XY plane
+            angles[i - 1] = np.degrees(
+                np.arccos(
+                    np.dot(
+                        fibres[i - 1],
+                        [0, 0, 1],
+                    )
+                )
+            )
 
         if angles[i - 1] > 90:
             angles[i - 1] -= 180
