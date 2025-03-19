@@ -10,14 +10,14 @@ def read_requirements():
 
 
 setup(
-    name="symfibre",
+    name="symmesh",
     version="0.1.0",
-    description="A Python package for generating and visualising" " uterine fibres.",
+    description="A Python package for manipulating uterine meshes",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",  # Use Markdown for README
     author="Mathias Roesler",
     author_email="mroe734@aucklanduni.ac.nz",
-    url="https://github.com/virtual-uterus/symfibre",
+    url="https://github.com/virtual-uterus/symmesh",
     license="Apache License 2.0",  # License type
     packages=find_packages(),
     python_requires=">=3.8",  # Minimum Python version required
