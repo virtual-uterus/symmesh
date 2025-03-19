@@ -5,96 +5,71 @@ cube-to-tet.py
 
 Script to convert a cubic mesh to a tetrahedral one
 Author: Mathias Roesler
-Date: 09/23
+Date: 03/25
 """
 
 import os
 import sys
+import meshio
 import argparse
 
 from symmesh.utils import convert_connections
+from symmesh.constants import BASE, HOME
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Converts a cubic vtk mesh to a tetrahedral one"
     )
-
     # Parse input arguments
     parser.add_argument(
-        "mesh_path",
+        "dir_path",
         type=str,
-        metavar="mesh-path",
-        help="path to the mesh to convert",
+        metavar="dir-path",
+        help="path from BASE to the data",
+    )
+    parser.add_argument(
+        "mesh_name",
+        type=str,
+        metavar="mesh-name",
+        help="name of the mesh to load without extension",
+    )
+    parser.add_argument(
+        "--extension",
+        type=str,
+        help="mesh extension, vtk or vtu",
+        default="vtk",
     )
 
     args = parser.parse_args()
 
-    [mesh_path, mesh_name] = os.path.split(args.mesh_path)
-    [mesh_name, mesh_ext] = mesh_name.split(".")
+    # Create file path
+    dir_path = os.path.join(
+        HOME,
+        BASE,
+        args.dir_path,
+    )
+    mesh_path = os.path.join(dir_path, args.mesh_name)
 
     # Check extension
     try:
-        assert mesh_ext == "vtk"
+        assert args.extension == "vtk" or args.extension == "vtu"
 
     except AssertionError:
         sys.stderr.write("Error: incorrect extension\n")
-        sys.stderr.write("Got {} instead of vtk".format(mesh_ext))
+        sys.stderr.write(f"Got {args.extension} instead of vtk or vtu")
         exit()
 
-    new_mesh = os.path.join(mesh_path, mesh_name + "_tet." + mesh_ext)
+    hex_mesh_path = os.path.join(mesh_path + "." + args.extension)
+    tet_mesh_path = os.path.join(mesh_path + "_tet." + args.extension)
 
     # Read the whole vtk file
-    with open(args.mesh_path, "r") as f:
-        mesh = f.read()
+    hex_mesh = meshio.read(hex_mesh_path)
 
-    # Open the new mesh
-    with open(new_mesh, "w") as f:
-        mesh_lines = mesh.split("\n")
+    points = hex_mesh.points
+    nodes = hex_mesh.cells_dict["hexahedron"]
+    cells = [("tetra", convert_connections(nodes))]
 
-        # Write header and POINTS
-        for i, line in enumerate(mesh_lines):
-            if line[0:5] == "CELLS":
-                break
-
-            else:
-                f.write(line + "\n")
-
-        # Get the number of cells
-        cell_line = mesh_lines[i]
-        [CELLS, n, size] = cell_line.split(" ")  # Using VTK notation
-
-        # Convert n and size to int
-        n = int(n)
-        size = int(size)
-
-        # Calculate new values
-        new_n = 6 * n
-        new_size = new_n * 5
-
-        # Write the CELLS
-        f.write("CELLS {} {}\n".format(new_n, new_size))
-
-        for j, line in enumerate(mesh_lines[(i + 1):]):
-            if line[0] == "C":
-                # Exit after reading all the cells
-                break
-
-            str_node_list = line.split(" ")
-            int_node_list = [int(x) for x in str_node_list[1:]]
-
-            tet_node_list = convert_connections(int_node_list)
-
-            for node_list in tet_node_list:
-                f.write("4 ")  # Write the number of points
-
-                for idx in node_list:
-                    f.write("{} ".format(idx))
-
-                f.write("\n")  # Write EOL
-
-        # Write the CELL_TYPES
-        f.write("CELL_TYPES {}\n".format(new_n))
-
-        for k in range(new_n):
-            f.write("10\n")  # VTK_TETRA id
+    # Create tet mesh and save
+    tet_mesh = meshio.Mesh(points, cells)
+    tet_mesh.write(tet_mesh_path)
