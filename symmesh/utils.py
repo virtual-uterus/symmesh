@@ -50,7 +50,7 @@ def convert_connections(cube_node_list):
     connections
 
     Arguments:
-    cube_node_list -- list[int], list of nodes for the cubic element.
+    cube_node_list -- [list[int]], list of nodes for the cubic element.
 
     Return:
     tet_node_list -- list[list[int]], list of the six node lists for the
@@ -58,9 +58,10 @@ def convert_connections(cube_node_list):
 
     """
     tet_node_list = []
-    for idx_list in CONVERSION_IDX:
-        tet_list = [cube_node_list[idx] for idx in idx_list]
-        tet_node_list.append(tet_list)
+    for node in cube_node_list:
+        for idx_list in CONVERSION_IDX:
+            tet_list = [node[idx] for idx in idx_list]
+            tet_node_list.append(tet_list)
 
     return tet_node_list
 
