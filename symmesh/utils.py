@@ -12,10 +12,85 @@ import sys
 import numpy as np
 import pandas as pd
 
+from symmesh.constants import CONVERSION_IDX
+
 try:
     import dolfin as df
 except ImportError:
     sys.stderr.write("Warning: no module named dolfin\n")
+
+
+def get_range(num_range):
+    """Converts the input range into a list of numbers
+
+    Arguments:
+    num_range -- str, range of number from the input argument.
+
+    Return:
+    num_list -- list[int], list of numbers extracted from the range.
+
+    """
+    if len(num_range) == 1:
+        split = num_range[0].split("-")
+        if len(split) == 1:
+            # Single number
+            num_list = int(num_range[0])
+        else:
+            # Range
+            num_list = [i for i in range(int(split[0]), int(split[1]) + 1)]
+    else:
+        # Convert to list to int
+        num_list = [int(i) for i in num_range]
+
+    return num_list
+
+
+def convert_connections(cube_node_list):
+    """Converts the connections of the cubic element to six tetrahedra
+    connections
+
+    Arguments:
+    cube_node_list -- list[int], list of nodes for the cubic element.
+
+    Return:
+    tet_node_list -- list[list[int]], list of the six node lists for the
+            tetrahedral elements.
+
+    """
+    tet_node_list = []
+    for idx_list in CONVERSION_IDX:
+        tet_list = [cube_node_list[idx] for idx in idx_list]
+        tet_node_list.append(tet_list)
+
+    return tet_node_list
+
+
+def print_quality(quality_array, metric_name):
+    """Prints statistical information about the quality metric
+
+    Arguments:
+    quality_array -- np.array, quality data for mesh nodes.
+    metric_name -- str, name of the quality metric.
+
+    Return:
+
+    """
+    print("{} quality data:".format(metric_name))
+    print(
+        "Mean: {:.4f} \u00b1 {:.4f}".format(
+            np.mean(quality_array),
+            np.std(quality_array),
+        )
+    )
+    print(
+        "Min-Max: [{:.4f} - {:.4f}]".format(
+            np.min(quality_array),
+            np.max(quality_array),
+        )
+    )
+    print("10th percentile: {:.4f}".format(np.percentile(quality_array, 10)))
+    print("Median: {:.2f}".format(np.median(quality_array)))
+    print("90th percentile: {:.4f}".format(np.percentile(quality_array, 90)))
 
 
 def write_ortho_file(file_path, fibres, sheets, normals):
