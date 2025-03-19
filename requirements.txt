@@ -1,1 +1,4 @@
 numpy==1.24
+matplotlib==3.8.1
+meshio==5.3.4
+pyvista==0.44.1
