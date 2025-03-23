@@ -23,10 +23,10 @@ def neighbour_distance(mesh_path):
     """Finds the Euclidean distance between neighbouring elements in
     a volumetric mesh
 
-    Arguments:
+    Args:
     mesh_path -- str, path to the mesh to load.
 
-    Return:
+    Returns:
     distances -- np.array(float), array of mean distance between each cell and
     its neighbours.
 
@@ -66,10 +66,10 @@ def neighbour_distance(mesh_path):
 def edge_lengths(mesh_path):
     """Finds the average edge length of the elements in a volumetric mesh
 
-    Arguments:
+    Args:
     mesh_path -- str, path to the mesh to load.
 
-    Return:
+    Returns:
     edge_len -- np.array(float), array with the edge length of the elements.
 
     Raises:
@@ -100,7 +100,7 @@ def distance_information(file_path, mesh_name, sim_range, extension):
     """Extracts the average distance between elements and the average
     edge length in a mesh and prints it
 
-    Arguments:
+    Args:
     file_path -- str, path to the mesh.
     mesh_name -- str, name of the mesh used for printing.
     sim_range -- list[int], range for several mesh with the same base name.
@@ -172,7 +172,7 @@ def distance_information(file_path, mesh_name, sim_range, extension):
 def quality_information(file_path, mesh_name, metric, sim_range, extension):
     """Extracts and plots the quality information of a mesh based on the metric
 
-    Arguments:
+    Args:
     file_path -- str, path to the mesh.
     mesh_name -- str, name of the mesh used for plotting labels.
     metric -- str, quality metric used {Aspect ratio, Jacobian}.

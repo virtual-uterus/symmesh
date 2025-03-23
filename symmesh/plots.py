@@ -17,12 +17,12 @@ from .constants import LEFT, RIGHT, BOTTOM
 def plot_single_mesh_quality(quality_data, metric, mesh_name):
     """Plots the quality data for a mesh as a boxplot
 
-    Arguments:
+    Args:
     quality_data -- np.array, quality data.
     metric -- str, name of the quality metric.
     mesh_name -- str, name of the mesh for title.
 
-    Return:
+    Returns:
 
     Raises:
 
@@ -51,13 +51,13 @@ def plot_multi_mesh_quality(quality_dict, density_data, metric):
     """Plots the quality data for multiple meshes as single points with
     error bars
 
-    Arguments:
+    Args:
     quality_dict -- dict, dictionnary with the quality data as value
     and mesh number as key.
     density_data -- np.array, number of elements in each mesh.
     metric -- str, name of the quality metric.
 
-    Return:
+    Returns:
 
     Raises:
 

@@ -23,10 +23,10 @@ except ImportError:
 def get_range(num_range):
     """Converts the input range into a list of numbers
 
-    Arguments:
+    Args:
     num_range -- str, range of number from the input argument.
 
-    Return:
+    Returns:
     num_list -- list[int], list of numbers extracted from the range.
 
     """
@@ -48,13 +48,13 @@ def get_range(num_range):
 def get_indices(normal_vector, elements, plane_distance, centre_norm):
     """Finds the indices of the elements to annotate with the thickness.
 
-    Arguments:
+    Args:
     normal_vector -- ndarray, normal vector for the plane.
     elements -- ndarray, list of elements in the mesh to sort.
     plane_distance -- int, distance between origin and cut planes.
     centre_norm -- float, norm of the normal vector.
 
-    Return:
+    Returns:
     idx_list -- np.array[int], list of indices of the correct elements.
 
     """
@@ -82,10 +82,10 @@ def convert_connections(cube_node_list):
     """Converts the connections of the cubic element to six tetrahedra
     connections
 
-    Arguments:
+    Args:
     cube_node_list -- [list[int]], list of nodes for the cubic element.
 
-    Return:
+    Returns:
     tet_node_list -- list[list[int]], list of the six node lists for the
             tetrahedral elements.
 
@@ -102,11 +102,11 @@ def convert_connections(cube_node_list):
 def print_quality(quality_array, metric_name):
     """Prints statistical information about the quality metric
 
-    Arguments:
+    Args:
     quality_array -- np.array, quality data for mesh nodes.
     metric_name -- str, name of the quality metric.
 
-    Return:
+    Returns:
 
     """
     print("{} quality data:".format(metric_name))

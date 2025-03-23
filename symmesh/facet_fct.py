@@ -16,12 +16,12 @@ class InnerLayer(df.SubDomain):
     def inside(self, coord, on_boundary):
         """Identifies inner layer elements
 
-        Arguments:
+        Args:
         coord -- np.array, 3D array containing coordinates of the element.
         on_boundary -- bool, flag indicating wether the point is on the
         boundary
 
-        Return:
+        Returns:
         on_boundary -- bool, true if conditions are satisfied
 
         """
@@ -37,12 +37,12 @@ class OuterLayer(df.SubDomain):
     def inside(self, coord, on_boundary):
         """Identifies outer layer elements
 
-        Arguments:
+        Args:
         coord -- np.array, 3D array containing coordinates of the element.
         on_boundary -- bool, flag indicating wether the point is on the
         boundary
 
-        Return:
+        Returns:
         on_boundary -- bool, true if conditions are satisfied
 
         """
@@ -56,12 +56,12 @@ class BaseLayer(df.SubDomain):
     def inside(self, coord, on_boundary):
         """Identifies base layer elements
 
-        Arguments:
+        Args:
         coord -- np.array, 3D array containing coordinates of the element.
         on_boundary -- bool, flag indicating wether the point is on the
         boundary
 
-        Return:
+        Returns:
         on_boundary -- bool, true if conditions are satisfied
 
         """

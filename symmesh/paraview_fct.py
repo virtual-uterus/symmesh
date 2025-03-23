@@ -18,12 +18,12 @@ import paraview.servermanager as psm
 def fetch_quality_data(quality, mesh_quality, view):
     """Fetches the quality data based on the selected quality
 
-    Arguments:
+    Args:
     quality -- str, quality metric to fecth.
     mesh_quality -- psm.MeshQuality, Paraview extracted mesh quality object.
     view -- psm.RenderView, Paraview rendered view of the mesh.
 
-    Return:
+    Returns:
     quality_data -- np.array, quality value for the cells in the mesh.
 
     Raises:
@@ -57,11 +57,11 @@ def fetch_quality_data(quality, mesh_quality, view):
 def paraview_quality(mesh_path, metric):
     """Inspects the quality of the mesh for a given metric
 
-    Arguments:
+    Args:
     mesh_path -- str, path to the mesh vtu file.
     metric -- str, quality metric used {Aspect Ratio, Mean Ratio, Jacobian}.
 
-    Return:
+    Returns:
     quality_data -- np.array, quality data for the given metric.
 
     Raises:
