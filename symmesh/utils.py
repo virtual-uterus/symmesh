@@ -9,6 +9,7 @@ Date: 01/25
 """
 
 import sys
+import tomli
 import numpy as np
 import pandas as pd
 
@@ -76,6 +77,22 @@ def get_indices(normal_vector, elements, plane_distance, centre_norm):
     ]
 
     return np.array(idx_list, dtype=int)
+
+
+def parse_TOML(toml_file):
+    """Parse a toml file
+
+    Args:
+    toml_file -- str, path to the toml file.
+
+    Returns:
+    data -- dict, dictonary containing the parameters.
+
+    """
+    with open(toml_file, "rb") as f:
+        data = tomli.load(f)
+
+    return data
 
 
 def convert_connections(cube_node_list):
