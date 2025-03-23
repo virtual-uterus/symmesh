@@ -398,12 +398,12 @@ def write_exelem_vol(file_path, elements, thickness=True):
 
     Returns:
 
-    """
-    try:
-        assert elements.shape[1] == 4
+    Raises:
+    ValueError, if the elements are not 4D.
 
-    except AssertionError:
-        sys.stderr.write("Error: elements should contain 4 nodes\n")
+    """
+    if elements.shape[1] != 4:
+        raise ValueError("elements should contain 4 nodes")
 
     with open(file_path, "w") as f:
         # Write the exnode file header
@@ -504,12 +504,12 @@ def write_exelem_surf(file_path, elements, thickness=True):
 
     Returns:
 
-    """
-    try:
-        assert elements.shape[1] == 3
+    Raises:
+    ValueError, if the elements are not 3D.
 
-    except AssertionError:
-        sys.stderr.write("Error: elements should contain 3 nodes\n")
+    """
+    if elements.shape[1] != 3:
+        raise ValueError("elements should contain 3 nodes")
 
     with open(file_path, "w") as f:
         # Write the exnode file header
@@ -598,25 +598,21 @@ def write_exnode(file_path, nodes, thickness=None):
 
     Returns:
 
-    """
-    try:
-        # Check for number of coordinates
-        assert nodes.shape[1] == 3
+    Raises:
+    ValueError, if the nodes are not 3D.
+    ValueError, if the nodes and thickness do not have the same number of
+    elements.
 
-    except AssertionError:
-        sys.stderr.write("Error: nodes should have three coordinates\n")
-        exit()
+    """
+    if nodes.shape[1] != 3:
+        raise ValueError("nodes should have three coordinates")
 
     if type(thickness) is not type(None):
-        try:
-            # Check that thickness and nodes have the same dimension
-            assert nodes.shape[0] == thickness.shape[0]
-
-        except AssertionError:
-            sys.stderr.write(
-                "Error: nodes and thickness should have the same number of elements\n"
+        # Check that thickness and nodes have the same dimension
+        if nodes.shape[0] != thickness.shape[0]:
+            raise ValueError(
+                "nodes and thickness should have the same number of elements"
             )
-            exit()
 
     with open(file_path, "w") as f:
         # Write exnode file header

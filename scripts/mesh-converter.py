@@ -78,13 +78,18 @@ if __name__ == "__main__":
         vol_flag = False
 
     # Write EX files
-    print("Writing exnode file")
-    utils.write_exnode(mesh_file + ".exnode", nodes, thickness)
+    try:
+        print("Writing exnode file")
+        utils.write_exnode(mesh_file + ".exnode", nodes, thickness)
 
-    print("Writing exelem file")
-    if vol_flag:
-        utils.write_exelem_vol(mesh_file + ".exelem", elements, thickness_flag)
+        print("Writing exelem file")
+        if vol_flag:
+            utils.write_exelem_vol(mesh_file + ".exelem",
+                                   elements, thickness_flag)
 
-    else:
-        utils.write_exelem_surf(mesh_file + ".exelem",
-                                elements, thickness_flag)
+        else:
+            utils.write_exelem_surf(
+                mesh_file + ".exelem", elements, thickness_flag)
+    except ValueError as e:
+        sys.stderr.write("Error: {}\n".format(e))
+        exit()
