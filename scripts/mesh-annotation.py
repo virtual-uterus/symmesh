@@ -16,6 +16,8 @@ import numpy as np
 import scipy.io
 
 import symmesh.utils as utils
+from symmesh.constants import BASE, HOME
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -86,10 +88,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Set arguments
-    mesh_directory = os.path.join(utils.HOME, utils.BASE, args.mesh_dir)
+    mesh_directory = os.path.join(HOME, BASE, args.mesh_dir)
     thickness_directory = os.path.join(
-        utils.HOME, utils.BASE, args.data_dir, args.base_name
-    )
+        HOME, BASE, args.data_dir, args.base_name)
     mesh_name = os.path.join(
         mesh_directory,
         args.base_name + "_volumetric_mesh",
@@ -109,7 +110,7 @@ if __name__ == "__main__":
         )
 
     # Load parameters
-    params = utils.parseTOML(param_file)
+    params = utils.parse_TOML(param_file)
 
     # Add the muscle segmentation to the load directory
     thickness_directory = os.path.join(

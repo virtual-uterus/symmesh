@@ -15,6 +15,7 @@ import sys
 import meshio
 
 import symmesh.utils as utils
+from symmesh.constants import BASE, HOME
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Set arguments
-    mesh_path = os.path.join(utils.HOME, utils.BASE, args.mesh_dir)
+    mesh_path = os.path.join(HOME, BASE, args.mesh_dir)
     mesh_file = mesh_path + "/" + args.mesh_name
 
     # Read the mesh file
